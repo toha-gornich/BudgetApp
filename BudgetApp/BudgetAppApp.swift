@@ -19,7 +19,7 @@ struct BudgetAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BudgetListScreen()
                 .environment(\.managedObjectContext, provider.context)
         }
     }

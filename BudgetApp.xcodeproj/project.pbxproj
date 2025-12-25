@@ -29,12 +29,27 @@
 		62F551F22EFDCB82006414E6 /* BudgetAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		62F551D52EFDCB81006414E6 /* BudgetApp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BudgetApp;
-			sourceTree = "<group>";
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		62F5522C2EFDD05D006414E6 /* Exceptions for "BudgetApp" folder in "BudgetApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BudgetAppModel.xcdatamodeld,
+			);
+			target = 62F551D22EFDCB81006414E6 /* BudgetApp */;
 		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		62F5522D2EFDD05D006414E6 /* Exceptions for "BudgetApp" folder in "Compile Sources" phase from "BudgetApp" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 62F551CF2EFDCB81006414E6 /* Sources */;
+			membershipExceptions = (
+				BudgetAppModel.xcdatamodeld,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
 		62F551EB2EFDCB82006414E6 /* BudgetAppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BudgetAppTests;
@@ -43,6 +58,15 @@
 		62F551F52EFDCB82006414E6 /* BudgetAppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BudgetAppUITests;
+			sourceTree = "<group>";
+		};
+		62F552252EFDD05D006414E6 /* BudgetApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				62F5522C2EFDD05D006414E6 /* Exceptions for "BudgetApp" folder in "BudgetApp" target */,
+				62F5522D2EFDD05D006414E6 /* Exceptions for "BudgetApp" folder in "Compile Sources" phase from "BudgetApp" target */,
+			);
+			path = BudgetApp;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,10 +99,10 @@
 		62F551CA2EFDCB81006414E6 = {
 			isa = PBXGroup;
 			children = (
-				62F551D52EFDCB81006414E6 /* BudgetApp */,
 				62F551EB2EFDCB82006414E6 /* BudgetAppTests */,
 				62F551F52EFDCB82006414E6 /* BudgetAppUITests */,
 				62F551D42EFDCB81006414E6 /* Products */,
+				62F552252EFDD05D006414E6 /* BudgetApp */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,7 +132,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				62F551D52EFDCB81006414E6 /* BudgetApp */,
+				62F552252EFDD05D006414E6 /* BudgetApp */,
 			);
 			name = BudgetApp;
 			packageProductDependencies = (
