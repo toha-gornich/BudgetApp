@@ -9,11 +9,14 @@ import SwiftUI
 
 struct BudgetListScreen: View {
     
+    @FetchRequest(sortDescriptors: []) private var budgets: FetchedResults<Budget>
     @State private var isPresented: Bool = false
     
     var body: some View {
         VStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            List(budgets){budget in
+                Text(budget.title ?? "")
+            }
         }.navigationTitle("Budget App")
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing){
@@ -31,5 +34,5 @@ struct BudgetListScreen: View {
 #Preview {
     NavigationStack{
         BudgetListScreen()
-    }
+    }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
 }
