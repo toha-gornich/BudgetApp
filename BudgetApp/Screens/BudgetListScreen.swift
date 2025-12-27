@@ -15,7 +15,11 @@ struct BudgetListScreen: View {
     var body: some View {
         VStack {
             List(budgets){budget in
-                Text(budget.title ?? "")
+                NavigationLink{
+                    BudgetDetailScreen(budget: budget)
+                }label:{
+                    BudgetCellView(budget: budget)
+                }
             }
         }.navigationTitle("Budget App")
             .toolbar{
@@ -36,3 +40,4 @@ struct BudgetListScreen: View {
         BudgetListScreen()
     }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
 }
+
