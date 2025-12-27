@@ -12,6 +12,7 @@ extension Budget {
     
     
     
+    
     static func exists(context: NSManagedObjectContext, title: String) -> Bool{
         let request = Budget.fetchRequest()
         request.predicate = NSPredicate(format: "title == %@", title)

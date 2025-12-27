@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class CoreDataProvider{
+class CoreDataProvider {
     
     let persistentContainer: NSPersistentContainer
     
@@ -28,12 +28,26 @@ class CoreDataProvider{
         
         let groceries = Budget(context: context)
         groceries.title = "Groceries"
-        groceries.limit = 1000
+        groceries.limit = 200
         groceries.dateCreated = Date()
-    
-        do{
+        
+        let milk = Expense(context: context)
+        milk.title = "Milk"
+        milk.amount = 5.45
+        milk.dateCreated = Date()
+        
+        
+        let cookie = Expense(context: context)
+        cookie.title = "Milk"
+        cookie.amount = 5.45
+        cookie.dateCreated = Date()
+        
+        groceries.addToExpenses(milk)
+        groceries.addToExpenses(cookie)
+        
+        do {
             try context.save()
-        }catch{
+        } catch {
             print(error)
         }
         
@@ -41,19 +55,18 @@ class CoreDataProvider{
         
     }()
     
-    
     init(inMemory: Bool = false) {
+        
         persistentContainer = NSPersistentContainer(name: "BudgetAppModel")
         
         if inMemory {
-            persistentContainer.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+            persistentContainer.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
         
         persistentContainer.loadPersistentStores { _, error in
             if let error {
-                fatalError("Core Data store failed to init \(error.localizedDescription)")
+                fatalError("Core Data store failed to initialize \(error)")
             }
         }
     }
-    
 }
