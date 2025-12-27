@@ -38,6 +38,19 @@ struct BudgetDetailScreen: View {
         budget.limit - total
     }
     
+    private func deleteExpense(_ indexSet: IndexSet) {
+        indexSet.forEach{index in
+            let expense = expenses[index]
+            context.delete(expense)
+        }
+        
+        do{
+            try context.save()
+        }catch{
+            print(error.localizedDescription)
+        }
+    }
+    
     private func addExpense() {
         
         let expense = Expense(context: context)
@@ -59,6 +72,13 @@ struct BudgetDetailScreen: View {
     }
     
     var body: some View {
+        
+        VStack{
+            Text(budget.limit, format: .currency(code: Locale.currencyCode))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+        }
+        
         Form {
             
             Section("New expense") {
@@ -96,16 +116,13 @@ struct BudgetDetailScreen: View {
                 }
                 
                     ForEach(expenses) { expense in
-                        HStack {
-                            Text(expense.title ?? "")
-                            Spacer()
-                            Text(expense.amount, format: .currency(code:Locale.currencyCode))
-                        }
-                    }
+                        ExpenseCellView(expense: expense)
+                    }.onDelete(perform: deleteExpense)
 //                }
             }
                         
         }.navigationTitle(budget.title ?? "")
+        
     }
 }
 
@@ -125,3 +142,5 @@ struct BudgetDetailScreenContainer: View {
             .environment(\.managedObjectContext, CoreDataProvider.preview.context)
     }
 }
+
+
