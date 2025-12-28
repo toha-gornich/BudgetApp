@@ -16,6 +16,10 @@ struct FilterScreen: View {
     
     @State private var filteredExpenses: [Expense] = []
     
+    @State private var startPrice: Double?
+    @State private var endPrice: Double?
+    @State private var title: String = ""
+    
     private func filterTags() {
         
         if selectedTags.isEmpty {
@@ -34,11 +38,52 @@ struct FilterScreen: View {
         
     }
     
+    private func filteredByPrice() {
+        
+        guard let startPrice = startPrice,
+              let endPrice = endPrice else {return}
+        
+        let request = Expense.fetchRequest()
+        request.predicate = NSPredicate(format:"amount >= %@ AND amount <= %@", NSNumber(value: startPrice), NSNumber(value: endPrice))
+        
+        do{
+            filteredExpenses = try context.fetch(request)
+        }catch {
+            print(error)
+        }
+    }
+    
+    private func filteredByTitle() {
+        
+        let request = Expense.fetchRequest()
+        request.predicate = NSPredicate(format: "title BEGINSWITH %@", title)
+        
+        do{
+            filteredExpenses = try context.fetch(request)
+        }catch {
+            print(error)
+        }
+    }
+    
+    
     var body: some View {
-        VStack(alignment: .leading){
+        VStack(alignment: .leading, spacing: 20){
             Section("Filter by Tags"){
                 TagsView(selectedTags: $selectedTags)
                     .onChange(of: selectedTags, filterTags)
+            }
+            Section("Filter by Price"){
+                TextField("Start price", value: $startPrice, format: .number)
+                TextField("End price", value: $endPrice, format: .number)
+                Button("Search"){
+                    filteredByPrice()
+                }
+            }
+            Section("Filter by Title"){
+                TextField("STitle", text: $title)
+                Button("Search"){
+                    filteredByTitle()
+                }
             }
             
             List(filteredExpenses){expense in
