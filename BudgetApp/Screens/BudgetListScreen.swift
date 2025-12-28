@@ -14,17 +14,17 @@ struct BudgetListScreen: View {
     
     var body: some View {
         VStack {
-            List(budgets){budget in
-                NavigationLink{
+            List(budgets) { budget in
+                NavigationLink {
                     BudgetDetailScreen(budget: budget)
-                }label:{
+                } label: {
                     BudgetCellView(budget: budget)
                 }
             }
         }.navigationTitle("Budget App")
-            .toolbar{
-                ToolbarItem(placement: .topBarTrailing){
-                    Button("Add Budget"){
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Add Budget") {
                         isPresented = true
                     }
                 }
@@ -36,8 +36,7 @@ struct BudgetListScreen: View {
 }
 
 #Preview {
-    NavigationStack{
+    NavigationStack {
         BudgetListScreen()
     }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
 }
-

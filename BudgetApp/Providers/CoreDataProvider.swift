@@ -38,12 +38,28 @@ class CoreDataProvider {
         
         
         let cookie = Expense(context: context)
-        cookie.title = "Milk"
+        cookie.title = "Cookies"
         cookie.amount = 5.45
         cookie.dateCreated = Date()
         
         groceries.addToExpenses(milk)
         groceries.addToExpenses(cookie)
+        
+        // insert tags
+        let commonTags = ["Food","Dining","Travel","Entertainment","Shopping", "Transportation", "Utilities", "Groceries", "Health", "Education"]
+        
+        for commonTag in commonTags {
+            let tag = Tag(context: context)
+            tag.name = commonTag
+            if let tagName = tag.name, ["Food", "Groceries"].contains(tagName){
+                cookie.addToTags(tag)
+            }
+            if let tagName = tag.name, ["Health"].contains(tagName){
+                milk.addToTags(tag)
+            }
+            
+            
+        }
         
         do {
             try context.save()
