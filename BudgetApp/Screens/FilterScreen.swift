@@ -11,9 +11,17 @@ struct FilterScreen: View {
     
     @Environment(\.managedObjectContext) private var context
     @State private var selectedTags: Set<Tag> = []
+    
+    @FetchRequest(sortDescriptors: []) private var expenses: FetchedResults<Expense>
+    
     @State private var filteredExpenses: [Expense] = []
     
     private func filterTags() {
+        
+        if selectedTags.isEmpty {
+            return
+        }
+        
         let selectedTagNames = selectedTags.map{ $0.name}
         
         let request = Expense.fetchRequest()
@@ -37,7 +45,17 @@ struct FilterScreen: View {
                 ExpenseCellView(expense: expense)
             }
             
-            Spacer()  
+            Spacer()
+            
+            HStack {
+                Spacer()
+                Button("Show All"){
+                    selectedTags = []
+//                    selectedTags =
+                    filteredExpenses = expenses.map{$0}
+                }
+                Spacer()
+            }
             
         }.padding()
         .navigationTitle("Filter")
@@ -45,6 +63,8 @@ struct FilterScreen: View {
 }
 
 #Preview {
-    FilterScreen()
-        .environment(\.managedObjectContext, CoreDataProvider.preview.context)
+    NavigationStack{
+        FilterScreen()
+            .environment(\.managedObjectContext, CoreDataProvider.preview.context)
+    }
 }
