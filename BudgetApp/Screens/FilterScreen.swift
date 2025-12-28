@@ -20,6 +20,55 @@ struct FilterScreen: View {
     @State private var endPrice: Double?
     @State private var title: String = ""
     
+    @State private var startDate = Date()
+    @State private var endDate = Date()
+    @State private var selectedSortOptions: SortOptions? = nil
+    @State private var selectedSortDirections: SortDirection = .asc
+    
+    private enum SortDirection: CaseIterable, Identifiable{
+        case asc
+        case desc
+        
+        var id: SortDirection { self }
+        
+        var title:String{
+            switch self{
+            case .asc:
+                return "Ascending"
+            case .desc:
+                return "Descending"
+                
+            }
+        }
+    }
+    
+    private enum SortOptions:CaseIterable, Identifiable {
+        case title
+        case date
+        
+        var id: SortOptions { self }
+        
+        var title:String{
+            switch self{
+            case .title:
+                return "Title"
+            case .date:
+                return "Date"
+                
+            }
+        }
+        
+        var key:String{
+            switch self{
+            case .title:
+                return "title"
+            case .date:
+                return "dateCreated"
+                
+            }
+        }
+    }
+    
     private func filterTags() {
         
         if selectedTags.isEmpty {
@@ -65,9 +114,55 @@ struct FilterScreen: View {
         }
     }
     
+    private func filteredByDate() {
+        
+        let request = Expense.fetchRequest()
+        request.predicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@", startDate as NSDate, endDate as NSDate)
+        
+        do{
+            filteredExpenses = try context.fetch(request)
+        }catch {
+            print(error)
+        }
+    }
+    
+    private func performSort(){
+        guard let sortOption = selectedSortOptions else {return}
+        
+        let request = Expense.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: sortOption.key, ascending: selectedSortDirections == .asc ? true : false)]
+        
+        do{
+            filteredExpenses = try context.fetch(request)
+        }catch {
+            print(error)
+        }
+    }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20){
+        List{
+            Section("Sort"){
+                Picker("Sort Options", selection: $selectedSortOptions){
+                    Text("Select").tag(Optional<SortOptions>(nil))
+                    ForEach(SortOptions.allCases){
+                        option in
+                        Text(option.title)
+                            .tag(Optional(option))
+                    }
+                }
+                
+                Picker("Sort Direction", selection: $selectedSortDirections){
+                    ForEach(SortDirection.allCases){option in
+                        Text(option.title)
+                            .tag(option)
+                    }
+                    
+                }
+                Button("Sort"){
+                    performSort()
+                }.buttonStyle(.borderless)
+            }
+            
             Section("Filter by Tags"){
                 TagsView(selectedTags: $selectedTags)
                     .onChange(of: selectedTags, filterTags)
@@ -85,12 +180,19 @@ struct FilterScreen: View {
                     filteredByTitle()
                 }
             }
-            
-            List(filteredExpenses){expense in
-                ExpenseCellView(expense: expense)
+            Section("Filter by Date"){
+                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                
+                Button("Search"){
+                    filteredByDate()
+                }
             }
-            
-            Spacer()
+            Section("Expenses"){
+                ForEach(filteredExpenses){expense in
+                    ExpenseCellView(expense: expense)
+                }
+            }
             
             HStack {
                 Spacer()
