@@ -29,15 +29,6 @@ struct BudgetDetailScreen: View {
         !title.isEmptyOrWhitespace && amount != nil && Double(amount!) > 0 && !selectedTags.isEmpty
     }
     
-    private var total: Double{
-        return expenses.reduce(0){result, expense in
-            expense.amount + result
-        }
-    }
-    
-    private var remaining:Double{
-        budget.limit - total
-    }
     
     private func deleteExpense(_ indexSet: IndexSet) {
         indexSet.forEach{index in
@@ -100,21 +91,19 @@ struct BudgetDetailScreen: View {
             }
             
             Section("Expenses") {
-                
-//                List{
-                    
+
                 VStack(alignment: .leading) {
                     HStack {
                         Spacer()
-                        Text("Total")
-                        Text(total, format: .currency(code:Locale.currencyCode))
+                        Text("Spent")
+                        Text(budget.spent, format: .currency(code:Locale.currencyCode))
                         Spacer()
                     }
                     HStack {
                         Spacer()
                         Text("Total")
-                        Text(remaining, format: .currency(code:Locale.currencyCode))
-                            .foregroundStyle(remaining < 0 ? .red : .green)
+                        Text(budget.remaining, format: .currency(code:Locale.currencyCode))
+                            .foregroundStyle(budget.remaining < 0 ? .red : .green)
                         Spacer()
                     }
                 }
@@ -122,7 +111,6 @@ struct BudgetDetailScreen: View {
                     ForEach(expenses) { expense in
                         ExpenseCellView(expense: expense)
                     }.onDelete(perform: deleteExpense)
-//                }
             }
                         
         }.navigationTitle(budget.title ?? "")
