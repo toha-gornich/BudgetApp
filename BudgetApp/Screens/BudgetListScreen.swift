@@ -65,9 +65,3 @@ struct BudgetListScreen: View {
             })
     }
 }
-
-#Preview {
-    NavigationStack {
-        BudgetListScreen()
-    }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
-}
