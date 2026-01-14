@@ -6,64 +6,64 @@
 //
 
 import SwiftUI
-
 struct AddBudgetScreen: View {
-    
     
     @Environment(\.managedObjectContext) private var context
     
     @State private var title: String = ""
     @State private var limit: Double?
+    
     @State private var errorMessage: String = ""
     
     private var isFormValid: Bool {
         !title.isEmptyOrWhitespace && limit != nil && Double(limit!) > 0
     }
     
-    private func saveBudget(){
+    private func saveBudget() {
+        
         let budget = Budget(context: context)
         budget.title = title
         budget.limit = limit ?? 0.0
         budget.dateCreated = Date()
         
-        do{
+        do {
             try context.save()
             errorMessage = ""
-        }catch{
-            errorMessage = "Unable to save budget"
+        } catch {
+            errorMessage = "Unable to save budget."
         }
     }
     
     var body: some View {
-        Form{
+        Form {
             Text("New Budget")
                 .font(.title)
                 .font(.headline)
             
             TextField("Title", text: $title)
                 .presentationDetents([.medium])
-            
-            TextField("Title", value: $limit, format: .number)
+            TextField("Limit", value: $limit, format: .number)
                 .keyboardType(.numberPad)
-            
-            Button{
-                if Budget.exists(context: context, title: title){
+            Button {
+                if !Budget.exists(context: context, title: title) {
                     saveBudget()
-                }else {
+                } else {
+                    // error Message
                     errorMessage = "Budget title already exists."
                 }
-            }label:{
-                Text("save")
+            } label: {
+                Text("Save")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .disabled(!isFormValid)
+            .presentationDetents([.medium])
+
             Text(errorMessage)
-            
-        }.presentationDetents([.medium])
+        }
     }
-    
 }
+
 
 #Preview {
     AddBudgetScreen()
