@@ -45,7 +45,7 @@ struct AddBudgetScreen: View {
             TextField("Limit", value: $limit, format: .number)
                 .keyboardType(.numberPad)
             Button {
-                if !Budget.exists(context: context, title: title) {
+                if Budget.exists(context: context, title: title) {
                     saveBudget()
                 } else {
                     // error Message

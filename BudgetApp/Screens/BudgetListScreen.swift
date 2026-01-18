@@ -13,24 +13,34 @@ struct BudgetListScreen: View {
     @State private var isPresented: Bool = false
     
     var body: some View {
-        VStack {
-            List(budgets) { budget in
-                NavigationLink {
-                    BudgetDetailScreen(budget: budget)
-                } label: {
-                    BudgetCellView(budget: budget)
-                }
-            }
-        }.navigationTitle("Budget App")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add Budget") {
-                        isPresented = true
+        NavigationStack{
+            VStack {
+                List(budgets) { budget in
+                    NavigationLink {
+                        BudgetDetailScreen(budget: budget)
+                    } label: {
+                        BudgetCellView(budget: budget)
                     }
                 }
-            }
-            .sheet(isPresented: $isPresented, content: {
-                AddBudgetScreen()
-            })
+            }.navigationTitle("Budget App")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Add Budget") {
+                            isPresented = true
+                        }
+                    }
+                }
+                .sheet(isPresented: $isPresented, content: {
+                    AddBudgetScreen()
+                })
+        }
     }
 }
+
+
+#Preview {
+    NavigationStack {
+        BudgetListScreen()
+    }.environment(\.managedObjectContext, CoreDataProvider.preview.context)
+}
+

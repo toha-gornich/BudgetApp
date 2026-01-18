@@ -16,7 +16,11 @@ struct BudgetDetailScreen: View {
     @State private var title: String = ""
     @State private var amount: Double?
     @State private var quantity: Int?
+    @State private var expenseToEdit: Expense?
+    
     @State private var selectedTags: Set<Tag> = []
+    
+    
     
     @FetchRequest(sortDescriptors: []) private var expenses: FetchedResults<Expense>
     
@@ -54,9 +58,12 @@ struct BudgetDetailScreen: View {
         do {
             try context.save()
             title = ""
+            quantity = nil
             amount = nil
+            selectedTags = []
             
         } catch {
+            context.rollback()
             print(error.localizedDescription)
         }
         
@@ -125,12 +132,19 @@ struct BudgetDetailScreen: View {
                     
                     ForEach(expenses) { expense in
                         ExpenseCellView(expense: expense)
+                            .onLongPressGesture{
+                                expenseToEdit = expense
+                            }
                     }.onDelete(perform: deleteExpense)
                 }
                 
             }
                         
         }.navigationTitle(budget.title ?? "")
+            .sheet(item: $expenseToEdit){expenseToEdit in
+                Text("SHow Edit Expense Screen")
+                
+            }
 
     }
 }

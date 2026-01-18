@@ -18,7 +18,7 @@ struct ExpenseCellView: View {
                 Text("\(expense.quantity)")
                 Spacer()
                 Text(expense.total, format: .currency(code: Locale.currencyCode))
-            }
+            }.contentShape(Rectangle())
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(Array(expense.tags as? Set<Tag> ?? [])) { tag in
