@@ -9,10 +9,57 @@ import SwiftUI
 
 struct EditExpenseScreen: View {
     
+    @Environment(\.managedObjectContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    
     let expense: Expense
+
+    @State private var expenseTitle: String = ""
+    @State private var expenseAmount: Double?
+    @State private var expenseQuantity: Int?
+    
+    @State private var expenseSelectedTags: Set<Tag> = []
+    
+    private func updateExpense() {
+        expense.title = expenseTitle
+        expense.amount = expenseAmount ?? 0
+        expense.quantity = Int16(expenseQuantity ?? 0)
+        expense.tags = NSSet(array: Array(expenseSelectedTags))
+        
+        do{
+            try context.save()
+            dismiss()
+        }catch{
+            print(error)
+        }
+    }
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Form{
+            TextField("Title", text: $expenseTitle)
+            TextField("Amount", value: $expenseAmount, format: .number)
+                .keyboardType(.numberPad)
+            TextField("Quantity", value: $expenseQuantity, format: .number)
+            
+            TagsView(selectedTags: $expenseSelectedTags)
+        }
+        .onAppear(perform: {
+            expenseTitle = expense.title ?? ""
+            expenseAmount = expense.amount
+            expenseQuantity = Int(expense.quantity)
+            
+            if let tags = expense.tags {
+                expenseSelectedTags = Set(tags.compactMap{$0 as? Tag})
+            }
+        })
+        .toolbar(content:{
+            ToolbarItem(placement: .topBarTrailing){
+                Button("update"){
+                    updateExpense()
+                }
+            }
+        })
+        .navigationTitle(expense.title ?? "")
     }
 }
 

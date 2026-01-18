@@ -142,8 +142,9 @@ struct BudgetDetailScreen: View {
                         
         }.navigationTitle(budget.title ?? "")
             .sheet(item: $expenseToEdit){expenseToEdit in
-                Text("SHow Edit Expense Screen")
-                
+                NavigationStack{
+                    EditExpenseScreen(expense: expenseToEdit)
+                }
             }
 
     }
