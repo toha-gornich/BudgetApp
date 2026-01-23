@@ -13,21 +13,16 @@ struct EditExpenseScreen: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var expense: Expense
+    let onUpdate: () -> Void
 
-//    @State private var expenseTitle: String = ""
-//    @State private var expenseAmount: Double?
-//    @State private var expenseQuantity: Int?
-//    @State private var expenseSelectedTags: Set<Tag> = []
     
     private func updateExpense() {
-//        expense.title = expenseTitle
-//        expense.amount = expenseAmount ?? 0
-//        expense.quantity = Int16(expenseQuantity ?? 0)
-//        expense.tags = NSSet(array: Array(expenseSelectedTags))
+
         
         do{
             try context.save()
-            dismiss()
+            onUpdate()
+            
         }catch{
             print(error)
         }
@@ -74,7 +69,7 @@ struct EditExpenseContainerView: View {
     
     var body: some View {
         NavigationStack{
-            EditExpenseScreen(expense: expenses[0])
+            EditExpenseScreen(expense: expenses[0], onUpdate: {})
         }
     }
 }

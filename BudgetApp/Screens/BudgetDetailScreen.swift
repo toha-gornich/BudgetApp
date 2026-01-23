@@ -6,6 +6,23 @@
 //
 
 import SwiftUI
+import CoreData
+
+
+struct EditExpenseConfig: Identifiable {
+    var id = UUID()
+    var expense: Expense
+    let childContext: NSManagedObjectContext
+//    context is parant context
+    init?( expenseObjectID: NSManagedObjectID, context: NSManagedObjectContext){
+        self.childContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        self.childContext.parent = context
+        guard let existingExpense = self.childContext.object(with: expenseObjectID) as? Expense else{
+            return nil
+        }
+        self.expense = existingExpense
+    }
+}
 
 struct BudgetDetailScreen: View {
     
@@ -16,11 +33,10 @@ struct BudgetDetailScreen: View {
     @State private var title: String = ""
     @State private var amount: Double?
     @State private var quantity: Int?
-    @State private var expenseToEdit: Expense?
     
     @State private var selectedTags: Set<Tag> = []
     
-    
+    @State private var editExpenseConfig: EditExpenseConfig?
     
     @FetchRequest(sortDescriptors: []) private var expenses: FetchedResults<Expense>
     
@@ -133,7 +149,8 @@ struct BudgetDetailScreen: View {
                     ForEach(expenses) { expense in
                         ExpenseCellView(expense: expense)
                             .onLongPressGesture{
-                                expenseToEdit = expense
+//                                expenseToEdit = expense
+                                editExpenseConfig = EditExpenseConfig(expenseObjectID: expense.objectID, context: context )
                             }
                     }.onDelete(perform: deleteExpense)
                 }
@@ -142,9 +159,17 @@ struct BudgetDetailScreen: View {
                         
         }.navigationTitle(budget.title ?? "")
             
-            .sheet(item: $expenseToEdit){expenseToEdit in
+            .sheet(item: $editExpenseConfig){editExpenseConfig in
                 NavigationStack{
-                    EditExpenseScreen(expense: expenseToEdit)
+                    EditExpenseScreen(expense: editExpenseConfig.expense){
+                        do {
+                            try context.save()
+                            self.editExpenseConfig = nil
+                        }catch {
+                            print(error)
+                        }
+                    }
+                        .environment(\.managedObjectContext, editExpenseConfig.childContext)
                 }
             }
 
